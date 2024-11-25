@@ -1,5 +1,6 @@
 package net.engineeringdigest.journalApp.services;
 
+import net.engineeringdigest.journalApp.entity.User;
 import net.engineeringdigest.journalApp.entity.journalEntry;
 import net.engineeringdigest.journalApp.repository.journalEntryRepository;
 import org.bson.types.ObjectId;
@@ -13,9 +14,14 @@ import java.util.Optional;
 public class journalentryServices {
    @Autowired
     private journalEntryRepository journalEntryRepository;
+   @Autowired
+   private UserEntryServices userEntryServices;
+    public void safeEntry(journalEntry journalEntry, String userName){
+        User user= userEntryServices.findbyusername(userName);
 
-    public void safeEntry(journalEntry journalEntry){
         journalEntryRepository.save(journalEntry);
+        user.getJournalEntries().add(journalEntry);
+        userEntryServices.safeEntry(user);
 
     }
     public List<journalEntry> getAll(){
