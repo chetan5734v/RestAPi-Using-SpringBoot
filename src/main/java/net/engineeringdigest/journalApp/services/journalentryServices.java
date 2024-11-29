@@ -24,6 +24,11 @@ public class journalentryServices {
         userEntryServices.safeEntry(user);
 
     }
+    public void safeEntry(journalEntry journalEntry){
+
+        journalEntryRepository.save(journalEntry);
+
+    }
     public List<journalEntry> getAll(){
        return  journalEntryRepository.findAll();
 
@@ -31,7 +36,10 @@ public class journalentryServices {
     public Optional<journalEntry> findbyid(ObjectId id){
         return  journalEntryRepository.findById(id);
     }
-    public  void deletebyId(ObjectId id){
+    public  void deletebyId(ObjectId id, String userName){
+        User user = userEntryServices.findbyusername(userName);
+        user.getJournalEntries().removeIf(x-> x.getId().equals(id));
+        userEntryServices.safeEntry(user);
         journalEntryRepository.deleteById(id);
     }
 
